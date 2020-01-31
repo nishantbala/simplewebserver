@@ -1,5 +1,7 @@
 package com.example.addition.server.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,8 @@ public class AdditionController {
 	private AdditionService additionService;
 	
 	@PostMapping()
-	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest) {
-		ResponseEntity<?> entity = new ResponseEntity<>(additionService.processData(payloadRequest), HttpStatus.OK);
+	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest, HttpSession session) {
+		ResponseEntity<?> entity = new ResponseEntity<>(additionService.processData(payloadRequest,session), HttpStatus.OK);
 		return entity;
 	}
 }

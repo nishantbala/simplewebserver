@@ -3,9 +3,12 @@ package com.example.addition.server.dao;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.addition.server.common.Constants;
 import com.example.addition.server.entity.AdditionEntity;
 import com.example.addition.server.exception.AdditionException;
 import com.example.addition.server.repository.AdditionRepository;
@@ -30,7 +33,7 @@ public class AdditionDao {
 		additionRepository.deleteAll();
     }
 	
-	public Long getSum() throws AdditionException {
+	public Long getSum(HttpSession session) throws AdditionException {
 		List<AdditionEntity> listOfNumbers = getAllNumbers();
 		Iterator<AdditionEntity> iterator = listOfNumbers.iterator();
 		Long sum = 0l;
@@ -39,6 +42,7 @@ public class AdditionDao {
 			sum += nextEntity.getNumber();
 		}
 		deleteAllNumbers();
+		session.setAttribute(Constants.SUM, sum);
 		return sum;
     }
 	
