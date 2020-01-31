@@ -1,5 +1,8 @@
 package com.example.addition.server.dao;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,5 +21,27 @@ public class AdditionDao {
 		entity.setNumber(number);
 		additionRepository.save(entity);
     }
+	
+	private List<AdditionEntity> getAllNumbers() throws AdditionException {
+		return additionRepository.findAll();
+    }
+	
+	private void deleteAllNumbers() throws AdditionException {
+		additionRepository.deleteAll();
+    }
+	
+	public Long getSum() throws AdditionException {
+		List<AdditionEntity> listOfNumbers = getAllNumbers();
+		Iterator<AdditionEntity> iterator = listOfNumbers.iterator();
+		Long sum = 0l;
+		while(iterator.hasNext()) {
+			AdditionEntity nextEntity = iterator.next();
+			sum += nextEntity.getNumber();
+		}
+		deleteAllNumbers();
+		return sum;
+    }
+	
+	
 
 }

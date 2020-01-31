@@ -18,8 +18,7 @@ public class AdditionController {
 	
 	@PostMapping()
 	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest) {
-		additionService.processData(payloadRequest);
-		ResponseEntity<?> entity = new ResponseEntity<>(payloadRequest, HttpStatus.OK);
+		ResponseEntity<?> entity = new ResponseEntity<>(additionService.processData(payloadRequest), HttpStatus.OK);
 		return entity;
 	}
 }
