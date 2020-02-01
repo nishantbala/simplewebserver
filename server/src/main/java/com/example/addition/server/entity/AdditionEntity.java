@@ -15,21 +15,70 @@ public class AdditionEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private BigInteger number;
+	private String sessionId;
+	private boolean readyForResponse;
+	private BigInteger sum;
 	
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+	/**
+	 * @return the number
+	 */
 	public BigInteger getNumber() {
 		return number;
 	}
-
+	/**
+	 * @param number the number to set
+	 */
 	public void setNumber(BigInteger number) {
 		this.number = number;
 	}
+	/**
+	 * @return the sessionId
+	 */
+	public String getSessionId() {
+		return sessionId;
+	}
+	/**
+	 * @param sessionId the sessionId to set
+	 */
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+	/**
+	 * @return the readyForResponse
+	 */
+	public boolean isReadyForResponse() {
+		return readyForResponse;
+	}
+	/**
+	 * @param readyForResponse the readyForResponse to set
+	 */
+	public void setReadyForResponse(boolean readyForResponse) {
+		this.readyForResponse = readyForResponse;
+	}
+	/**
+	 * @return the sum
+	 */
+	public BigInteger getSum() {
+		return sum;
+	}
+	/**
+	 * @param sum the sum to set
+	 */
+	public void setSum(BigInteger sum) {
+		this.sum = sum;
+	}
+	
 	
 }

@@ -2,7 +2,7 @@ package com.example.addition.server.controller;
 
 import java.math.BigInteger;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +22,11 @@ public class AdditionController {
 	private AdditionService additionService;
 	
 	@PostMapping()
-	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest, HttpSession session) {
+	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest, HttpServletRequest request) {
 		BigInteger result;
 		ResponseEntity<?> entity;
 		try {
-			result = additionService.processData(payloadRequest,session);
+			result = additionService.processData(payloadRequest,request);
 			entity = new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (NumberFormatException e) {
 			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
