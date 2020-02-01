@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.addition.server.exception.AdditionException;
 import com.example.addition.server.service.AdditionService;
 
 @RestController
@@ -20,7 +21,18 @@ public class AdditionController {
 	
 	@PostMapping()
 	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest, HttpSession session) {
-		ResponseEntity<?> entity = new ResponseEntity<>(additionService.processData(payloadRequest,session), HttpStatus.OK);
+		Long result;
+		ResponseEntity<?> entity;
+		try {
+			result = additionService.processData(payloadRequest,session);
+			entity = new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (NumberFormatException e) {
+			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InterruptedException e) {
+			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (AdditionException e) {
+			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 		return entity;
 	}
 }

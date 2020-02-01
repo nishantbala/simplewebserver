@@ -16,27 +16,19 @@ public class AdditionServiceImpl implements AdditionService {
     private AdditionDao additionDao;
 
 	@Override
-	public Long processData(String payloadRequest, HttpSession session) {
-		try {
-			if(payloadRequest.equals(Constants.END_STRING))
-			{
-				session.setAttribute(Constants.IS_END, Constants.IS_END);
-				return additionDao.getSum(session);
-			} else {
-				session.setAttribute(Constants.IS_END, null);
-				additionDao.saveNumber(new Long(payloadRequest));	
-				while(null == session.getAttribute(Constants.IS_END)) {
-					Thread.sleep(1000);
-				}
-				return new Long((long) session.getAttribute(Constants.SUM));
+	public Long processData(String payloadRequest, HttpSession session) throws NumberFormatException, InterruptedException, AdditionException {
+		if(payloadRequest.equals(Constants.END_STRING))
+		{
+			session.setAttribute(Constants.IS_END, Constants.IS_END);
+			return additionDao.getSum(session);
+		} else {
+			session.setAttribute(Constants.IS_END, null);
+			additionDao.saveNumber(new Long(payloadRequest));	
+			while(null == session.getAttribute(Constants.IS_END)) {
+				Thread.sleep(1000);
 			}
-		} catch (AdditionException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new Long((long) session.getAttribute(Constants.SUM));
 		}
-		return null;
 	}
 
 }
