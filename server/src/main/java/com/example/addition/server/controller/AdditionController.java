@@ -1,5 +1,7 @@
 package com.example.addition.server.controller;
 
+import java.math.BigInteger;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class AdditionController {
 	
 	@PostMapping()
 	public ResponseEntity<?> processRequest(@RequestBody String payloadRequest, HttpSession session) {
-		Long result;
+		BigInteger result;
 		ResponseEntity<?> entity;
 		try {
 			result = additionService.processData(payloadRequest,session);

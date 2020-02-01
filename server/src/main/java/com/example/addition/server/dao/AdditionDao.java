@@ -1,5 +1,6 @@
 package com.example.addition.server.dao;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AdditionDao {
 	@Autowired
     private AdditionRepository additionRepository;
 	
-	public void saveNumber(Long number) throws AdditionException {
+	public void saveNumber(BigInteger number) throws AdditionException {
 		AdditionEntity entity = new AdditionEntity();
 		entity.setNumber(number);
 		additionRepository.save(entity);
@@ -33,13 +34,13 @@ public class AdditionDao {
 		additionRepository.deleteAll();
     }
 	
-	public Long getSum(HttpSession session) throws AdditionException {
+	public BigInteger getSum(HttpSession session) throws AdditionException {
 		List<AdditionEntity> listOfNumbers = getAllNumbers();
 		Iterator<AdditionEntity> iterator = listOfNumbers.iterator();
-		Long sum = 0l;
+		BigInteger sum = BigInteger.ZERO;
 		while(iterator.hasNext()) {
 			AdditionEntity nextEntity = iterator.next();
-			sum += nextEntity.getNumber();
+			sum = sum.add(nextEntity.getNumber());
 		}
 		deleteAllNumbers();
 		session.setAttribute(Constants.SUM, sum);

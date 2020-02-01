@@ -1,5 +1,7 @@
 package com.example.addition.server.service;
 
+import java.math.BigInteger;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +18,24 @@ public class AdditionServiceImpl implements AdditionService {
     private AdditionDao additionDao;
 
 	@Override
-	public Long processData(String payloadRequest, HttpSession session) throws NumberFormatException, InterruptedException, AdditionException {
-		if(payloadRequest.equals(Constants.END_STRING))
+	public BigInteger processData(String payloadRequest, HttpSession session) throws NumberFormatException, InterruptedException, AdditionException {
+		if(validatePayloadRequest(payloadRequest))
 		{
-			session.setAttribute(Constants.IS_END, Constants.IS_END);
+			session.setAttribute(Constants.IS_END, true);
 			return additionDao.getSum(session);
 		} else {
 			session.setAttribute(Constants.IS_END, null);
-			additionDao.saveNumber(new Long(payloadRequest));	
+			additionDao.saveNumber(new BigInteger(payloadRequest));	
 			while(null == session.getAttribute(Constants.IS_END)) {
 				Thread.sleep(1000);
 			}
-			return new Long((long) session.getAttribute(Constants.SUM));
+			return (BigInteger) session.getAttribute(Constants.SUM);
 		}
+	}
+	
+	public boolean validatePayloadRequest(String payloadRequest) {
+		boolean isEnd = payloadRequest.equals(Constants.END_STRING);
+		return isEnd;
 	}
 
 }

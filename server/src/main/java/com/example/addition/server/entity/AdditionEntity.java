@@ -1,4 +1,6 @@
 package com.example.addition.server.entity;
+import java.math.BigInteger;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +14,7 @@ public class AdditionEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private Long number;
+	private BigInteger number;
 	
     public Long getId() {
         return id;
@@ -22,11 +24,11 @@ public class AdditionEntity {
         this.id = id;
     }
     
-	public Long getNumber() {
+	public BigInteger getNumber() {
 		return number;
 	}
 
-	public void setNumber(Long number) {
+	public void setNumber(BigInteger number) {
 		this.number = number;
 	}
 	
