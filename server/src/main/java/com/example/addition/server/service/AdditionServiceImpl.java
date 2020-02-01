@@ -19,7 +19,8 @@ public class AdditionServiceImpl implements AdditionService {
 
 	@Override
 	public BigInteger processData(String payloadRequest, HttpSession session) throws NumberFormatException, InterruptedException, AdditionException {
-		if(validatePayloadRequest(payloadRequest))
+		//validate here
+		if(isEndOfRequest(payloadRequest))
 		{
 			session.setAttribute(Constants.IS_END, true);
 			return additionDao.getSum(session);
@@ -33,7 +34,7 @@ public class AdditionServiceImpl implements AdditionService {
 		}
 	}
 	
-	public boolean validatePayloadRequest(String payloadRequest) {
+	public boolean isEndOfRequest(String payloadRequest) {
 		boolean isEnd = payloadRequest.equals(Constants.END_STRING);
 		return isEnd;
 	}
