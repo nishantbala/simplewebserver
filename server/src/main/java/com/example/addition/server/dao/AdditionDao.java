@@ -9,6 +9,7 @@ import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
+import com.example.addition.server.common.Constants;
 import com.example.addition.server.entity.AdditionEntity;
 import com.example.addition.server.exception.AdditionException;
 import com.example.addition.server.repository.AdditionRepository;
@@ -23,7 +24,7 @@ public class AdditionDao {
     private AdditionRepository additionRepository;
 	
 	public void saveEntity(AdditionEntity entity) throws AdditionException {
-		cacheManager.getCache("addition").put(entity.getSessionId(), entity.isReadyForResponse());
+		cacheManager.getCache(Constants.CACHE_ADDITION).put(entity.getSessionId(), entity.isReadyForResponse());
 		additionRepository.save(entity);
     }
 	
@@ -39,7 +40,7 @@ public class AdditionDao {
 		boolean canRespondValue = false;
 		
 		//First get cached item
-		ValueWrapper cachedItem = cacheManager.getCache("addition").get(sessionID);
+		ValueWrapper cachedItem = cacheManager.getCache(Constants.CACHE_ADDITION).get(sessionID);
 		
 		if(cachedItem == null) {
 			canRespondValue = false;
@@ -50,17 +51,12 @@ public class AdditionDao {
 		return canRespondValue;
 	}
 	
-	public BigInteger getSum(String sessionId) throws AdditionException {
-		ValueWrapper cachedItem = cacheManager.getCache("sum").get(sessionId);
+	public BigInteger getSumFromCache(String sessionId) throws AdditionException {
+		ValueWrapper cachedItem = cacheManager.getCache(Constants.CACHE_SUM).get(sessionId);
 		BigInteger sum = BigInteger.ZERO;
 		if(cachedItem == null) {
-			List<AdditionEntity> listOfEntities = findAllEntities(sessionId);
-			Iterator<AdditionEntity> iterator = listOfEntities.iterator();
-			while(iterator.hasNext()) {
-				AdditionEntity nextEntity = iterator.next();
-				sum = sum.add(nextEntity.getNumber());
-			}
-			cacheManager.getCache("sum").put(sessionId, sum);
+			sum = getSum(sessionId);
+			cacheManager.getCache(Constants.CACHE_SUM).put(sessionId, sum);
 			return sum;
 		}
 		else {
@@ -68,8 +64,19 @@ public class AdditionDao {
 		}	
     }
 	
+	public BigInteger getSum(String sessionId) throws AdditionException{
+		BigInteger sum = BigInteger.ZERO;
+		List<AdditionEntity> listOfEntities = findAllEntities(sessionId);
+		Iterator<AdditionEntity> iterator = listOfEntities.iterator();
+		while(iterator.hasNext()) {
+			AdditionEntity nextEntity = iterator.next();
+			sum = sum.add(nextEntity.getNumber());
+		}
+			return sum;
+	}
+	
 	public void clearCaches() {
-		cacheManager.getCache("sum").clear();
-		cacheManager.getCache("addition").clear();
+		cacheManager.getCache(Constants.CACHE_SUM).clear();
+		cacheManager.getCache(Constants.CACHE_ADDITION).clear();
 	}
 }

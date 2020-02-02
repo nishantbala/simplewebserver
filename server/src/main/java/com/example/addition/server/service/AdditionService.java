@@ -7,5 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.example.addition.server.exception.AdditionException;
 
 public interface AdditionService {
-	BigInteger processData(String payloadRequest, HttpServletRequest request) throws NumberFormatException, InterruptedException, AdditionException;	
+	BigInteger processRequest(String payloadRequest, HttpServletRequest request)
+			throws NumberFormatException, InterruptedException, AdditionException;	
 }

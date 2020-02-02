@@ -25,15 +25,15 @@ public class AdditionServiceImpl implements AdditionService {
     private AdditionDao additionDao;
 	
 	@Override
-	public BigInteger processData(String payloadRequest, HttpServletRequest request) throws NumberFormatException, InterruptedException, AdditionException {
-		//validate here
-		//find type of request
-		boolean isEndOfRequest = isEndOfRequest(payloadRequest);
+	public BigInteger processRequest(String payloadRequest, HttpServletRequest request) throws NumberFormatException, InterruptedException, AdditionException {
 		String sessionId = generateSessionId(request);
+		validateRequest(payloadRequest,sessionId);
+
+		boolean isEndOfRequest = isEndOfRequest(payloadRequest);
 		if(isEndOfRequest) {
 			List<AdditionEntity> listOfEntities = additionDao.findAllEntities(sessionId);
 			Iterator<AdditionEntity> iterator = listOfEntities.iterator();
-			BigInteger sum = additionDao.getSum(sessionId);
+			BigInteger sum = additionDao.getSumFromCache(sessionId);
 			while(iterator.hasNext()) {
 				AdditionEntity nextEntity = iterator.next();
 				nextEntity.setReadyForResponse(true);
@@ -46,7 +46,7 @@ public class AdditionServiceImpl implements AdditionService {
 			while(!additionDao.canRespond(entity.getId(), entity.getSessionId())){
 				TimeUnit.SECONDS.sleep(1);
 			 }
-			 BigInteger updatedSum = additionDao.getSum(sessionId);
+			 BigInteger updatedSum = additionDao.getSumFromCache(sessionId);
 			 additionDao.deleteEntity(entity);
 			 return updatedSum;
 		} 
@@ -54,6 +54,26 @@ public class AdditionServiceImpl implements AdditionService {
 	
 	public boolean isEndOfRequest(String payloadRequest) {
 		return payloadRequest.equals(Constants.END_STRING);
+	}
+	
+	public void validateRequest(String payloadRequest, String sessionId) throws AdditionException {
+		if(!isEndOfRequest(payloadRequest)) {
+			try {
+				new BigInteger(payloadRequest);
+			} catch (NumberFormatException e){
+				throw new AdditionException(Constants.ERROR_MSG_INVALID_INPUT+payloadRequest);
+			}
+			checkCurrentSum(payloadRequest, sessionId);
+		}
+	}
+	
+	public void checkCurrentSum(String payloadRequest, String sessionId) throws AdditionException {
+		BigInteger currentSum = additionDao.getSum(sessionId);
+		BigInteger currentValue = currentSum.add(new BigInteger(payloadRequest));
+		if(currentValue.compareTo(Constants.MAX_VALUE) > 0) {
+			throw new AdditionException(Constants.ERROR_MSG_MAX_VALUE_EXCEEDED);
+		}
+		
 	}
 	
 	public AdditionEntity createObject(String payloadRequest, String sessionId) throws AdditionException {
@@ -78,7 +98,7 @@ public class AdditionServiceImpl implements AdditionService {
 	
 	private static byte[] getSHA(String input) throws NoSuchAlgorithmException 
     {  
-        MessageDigest md = MessageDigest.getInstance("SHA-256");  
+        MessageDigest md = MessageDigest.getInstance(Constants.HASH_ALGORITHM);  
         return md.digest(input.getBytes(StandardCharsets.UTF_8));  
     } 
     
