@@ -17,7 +17,6 @@ public class AdditionEntity {
 	private BigInteger number;
 	private String sessionId;
 	private boolean readyForResponse;
-	private BigInteger sum;
 	
 	/**
 	 * @return the id
@@ -67,18 +66,6 @@ public class AdditionEntity {
 	public void setReadyForResponse(boolean readyForResponse) {
 		this.readyForResponse = readyForResponse;
 	}
-	/**
-	 * @return the sum
-	 */
-	public BigInteger getSum() {
-		return sum;
-	}
-	/**
-	 * @param sum the sum to set
-	 */
-	public void setSum(BigInteger sum) {
-		this.sum = sum;
-	}
-	
+
 	
 }

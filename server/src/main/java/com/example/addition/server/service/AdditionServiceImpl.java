@@ -29,26 +29,24 @@ public class AdditionServiceImpl implements AdditionService {
 		//validate here
 		//find type of request
 		boolean isEndOfRequest = isEndOfRequest(payloadRequest);
-		
+		String sessionId = generateSessionId(request);
 		if(isEndOfRequest) {
-			List<AdditionEntity> listOfEntities = additionDao.findAllEntities();
+			List<AdditionEntity> listOfEntities = additionDao.findAllEntities(sessionId);
 			Iterator<AdditionEntity> iterator = listOfEntities.iterator();
-			BigInteger sum = additionDao.getSum();
+			BigInteger sum = additionDao.getSum(sessionId);
 			while(iterator.hasNext()) {
 				AdditionEntity nextEntity = iterator.next();
 				nextEntity.setReadyForResponse(true);
-				nextEntity.setSum(sum);
 				additionDao.saveEntity(nextEntity);
 			} 
 			return sum;
 		} else {
-			AdditionEntity entity = createObject(payloadRequest, request);
+			AdditionEntity entity = createObject(payloadRequest, sessionId);
 			additionDao.saveEntity(entity);
-			while(null == additionDao.getUpdatedSum(entity)) 
-			{
+			while(!additionDao.canRespond(entity.getId(), entity.getSessionId())){
 				TimeUnit.SECONDS.sleep(1);
 			 }
-			 BigInteger updatedSum = additionDao.getUpdatedSum(entity);
+			 BigInteger updatedSum = additionDao.getSum(sessionId);
 			 additionDao.deleteEntity(entity);
 			 return updatedSum;
 		} 
@@ -58,19 +56,23 @@ public class AdditionServiceImpl implements AdditionService {
 		return payloadRequest.equals(Constants.END_STRING);
 	}
 	
-	public AdditionEntity createObject(String payloadRequest, HttpServletRequest request) throws AdditionException {
+	public AdditionEntity createObject(String payloadRequest, String sessionId) throws AdditionException {
 		AdditionEntity entity = new AdditionEntity();
 		entity.setNumber(new BigInteger(payloadRequest));
-		String ip = request.getRemoteAddr();
-		String sessionId;
-		try {
-			sessionId = toHexString(getSHA(ip + Constants.SECRET_KEY));
-		} catch (NoSuchAlgorithmException e) {
-			throw new AdditionException(e.getMessage());
-		}
 		entity.setSessionId(sessionId);
 		entity.setReadyForResponse(false);
 		return entity;
+	}
+	
+	public String generateSessionId(HttpServletRequest request) throws AdditionException{
+		String ipAddress = request.getRemoteAddr();
+		String sessionId = null;
+		try {
+			sessionId = toHexString(getSHA(ipAddress + Constants.SECRET_KEY));
+		} catch (NoSuchAlgorithmException e) {
+			throw new AdditionException(e.getMessage());
+		}
+		return sessionId;
 	}
 	
 	public static byte[] getSHA(String input) throws NoSuchAlgorithmException 
