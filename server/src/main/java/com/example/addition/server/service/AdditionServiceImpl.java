@@ -32,22 +32,17 @@ public class AdditionServiceImpl implements AdditionService {
 		boolean isEndOfRequest = isEndOfRequest(payloadRequest);
 		if(isEndOfRequest) {
 			List<AdditionEntity> listOfEntities = additionDao.findAllEntities(sessionId);
-			Iterator<AdditionEntity> iterator = listOfEntities.iterator();
 			BigInteger sum = additionDao.getSumFromCache(sessionId);
-			while(iterator.hasNext()) {
-				AdditionEntity nextEntity = iterator.next();
-				nextEntity.setReadyForResponse(true);
-				additionDao.saveEntity(nextEntity);
-			} 
+			additionDao.saveReadytoRespond(sessionId);
+			additionDao.deleteAllEntities(listOfEntities);
 			return sum;
 		} else {
 			AdditionEntity entity = createObject(payloadRequest, sessionId);
 			additionDao.saveEntity(entity);
-			while(!additionDao.canRespond(entity.getId(), entity.getSessionId())){
+			while(!additionDao.canRespond(entity.getId(),sessionId)){
 				TimeUnit.SECONDS.sleep(1);
 			 }
 			 BigInteger updatedSum = additionDao.getSumFromCache(sessionId);
-			 additionDao.deleteEntity(entity);
 			 return updatedSum;
 		} 
 	}
@@ -80,7 +75,6 @@ public class AdditionServiceImpl implements AdditionService {
 		AdditionEntity entity = new AdditionEntity();
 		entity.setNumber(new BigInteger(payloadRequest));
 		entity.setSessionId(sessionId);
-		entity.setReadyForResponse(false);
 		additionDao.clearCaches();
 		return entity;
 	}

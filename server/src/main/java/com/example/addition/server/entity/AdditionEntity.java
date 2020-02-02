@@ -16,7 +16,6 @@ public class AdditionEntity {
     private Long id;
 	private BigInteger number;
 	private String sessionId;
-	private boolean readyForResponse;
 	
 	/**
 	 * @return the id
@@ -54,18 +53,5 @@ public class AdditionEntity {
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
-	/**
-	 * @return the readyForResponse
-	 */
-	public boolean isReadyForResponse() {
-		return readyForResponse;
-	}
-	/**
-	 * @param readyForResponse the readyForResponse to set
-	 */
-	public void setReadyForResponse(boolean readyForResponse) {
-		this.readyForResponse = readyForResponse;
-	}
-
 	
 }

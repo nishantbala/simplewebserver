@@ -24,16 +24,17 @@ public class AdditionDao {
     private AdditionRepository additionRepository;
 	
 	public void saveEntity(AdditionEntity entity) throws AdditionException {
-		cacheManager.getCache(Constants.CACHE_ADDITION).put(entity.getSessionId(), entity.isReadyForResponse());
 		additionRepository.save(entity);
     }
-	
+	public void saveReadytoRespond(String sessionId) throws AdditionException {
+		cacheManager.getCache(Constants.CACHE_ADDITION).put(sessionId, true);
+    }	
 	public List<AdditionEntity> findAllEntities(String sessionId) throws AdditionException {
 		return additionRepository.findBySessionId(sessionId);
     }
 	
-	public void deleteEntity(AdditionEntity entity) throws AdditionException {
-		additionRepository.deleteById(entity.getId());
+	public void deleteAllEntities(List<AdditionEntity> entities) throws AdditionException {
+		additionRepository.deleteInBatch(entities);
     }
 	
 	public boolean canRespond(long entityID, String sessionID) {
