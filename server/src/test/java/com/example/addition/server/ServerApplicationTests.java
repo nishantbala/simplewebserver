@@ -41,28 +41,4 @@ class ServerApplicationTests {
         .andExpect(content().string("0"));
 	}
 	
-
-    public void testAdditionController() throws Exception 
-    {
-    	 List<String> listOfRequests = Arrays.asList("1", "2", "3", "end");
-    	 List<String> listOfResponses = Arrays.asList("6", "6", "6", "6");
-    	 List<MvcResult> mvcResultsList = new ArrayList<>();
-    	 Iterator<String> reqIterator = listOfRequests.iterator();
-    	 while(reqIterator.hasNext()) {
-    		 String request = reqIterator.next();
-    		 MvcResult mvcResult = mockMvc.perform(post("/").content(request))
-                     .andExpect(request().asyncStarted())
-                     .andDo(MockMvcResultHandlers.log())
-                     .andReturn();
-    		 mvcResultsList.add(mvcResult);
-    	 }
-         
-    	 for(int i=0; i < listOfRequests.size(); i++) {
-    		 MvcResult mvcResult  = mvcResultsList.get(i);
-    		 mockMvc.perform(asyncDispatch(mvcResult))
-             .andExpect(status().isOk())
-             .andExpect(content().string(listOfResponses.get(i)));
-    	 }
-          
-    }
 }
