@@ -68,6 +68,8 @@ public class AdditionDao {
 		}	
     }
 	
-	
-
+	public void clearCaches() {
+		cacheManager.getCache("sum").clear();
+		cacheManager.getCache("addition").clear();
+	}
 }
