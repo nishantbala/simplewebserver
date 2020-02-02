@@ -26,7 +26,7 @@ public class AdditionController {
 		BigInteger result;
 		ResponseEntity<?> entity;
 		try {
-			result = additionService.processData(payloadRequest,request);
+			result = additionService.processRequest(payloadRequest,request);
 			entity = new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (NumberFormatException e) {
 			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
