@@ -4,9 +4,9 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 import com.example.addition.server.common.Constants;
@@ -18,35 +18,66 @@ import com.example.addition.server.repository.AdditionRepository;
 public class AdditionDao {
 	
 	@Autowired
+	private CacheManager cacheManager;
+	
+	@Autowired
     private AdditionRepository additionRepository;
 	
-	public void saveNumber(BigInteger number) throws AdditionException {
-		AdditionEntity entity = new AdditionEntity();
-		entity.setNumber(number);
+	public void saveEntity(AdditionEntity entity) throws AdditionException {
 		additionRepository.save(entity);
     }
-	
-	private List<AdditionEntity> getAllNumbers() throws AdditionException {
-		return additionRepository.findAll();
+	public void saveReadytoRespond(String sessionId) throws AdditionException {
+		cacheManager.getCache(Constants.CACHE_ADDITION).put(sessionId, true);
+    }	
+	public List<AdditionEntity> findAllEntities(String sessionId) throws AdditionException {
+		return additionRepository.findBySessionId(sessionId);
     }
 	
-	private void deleteAllNumbers() throws AdditionException {
-		additionRepository.deleteAll();
+	public void deleteAllEntities(List<AdditionEntity> entities) throws AdditionException {
+		additionRepository.deleteInBatch(entities);
     }
 	
-	public BigInteger getSum(HttpSession session) throws AdditionException {
-		List<AdditionEntity> listOfNumbers = getAllNumbers();
-		Iterator<AdditionEntity> iterator = listOfNumbers.iterator();
+	public boolean canRespond(long entityID, String sessionID) {
+		boolean canRespondValue = false;
+		
+		//First get cached item
+		ValueWrapper cachedItem = cacheManager.getCache(Constants.CACHE_ADDITION).get(sessionID);
+		
+		if(cachedItem == null) {
+			canRespondValue = false;
+		}
+		else {
+			canRespondValue = (boolean)cachedItem.get();
+		}			
+		return canRespondValue;
+	}
+	
+	public BigInteger getSumFromCache(String sessionId) throws AdditionException {
+		ValueWrapper cachedItem = cacheManager.getCache(Constants.CACHE_SUM).get(sessionId);
 		BigInteger sum = BigInteger.ZERO;
+		if(cachedItem == null) {
+			sum = getSum(sessionId);
+			cacheManager.getCache(Constants.CACHE_SUM).put(sessionId, sum);
+			return sum;
+		}
+		else {
+			return (BigInteger) cachedItem.get();
+		}	
+    }
+	
+	public BigInteger getSum(String sessionId) throws AdditionException{
+		BigInteger sum = BigInteger.ZERO;
+		List<AdditionEntity> listOfEntities = findAllEntities(sessionId);
+		Iterator<AdditionEntity> iterator = listOfEntities.iterator();
 		while(iterator.hasNext()) {
 			AdditionEntity nextEntity = iterator.next();
 			sum = sum.add(nextEntity.getNumber());
 		}
-		deleteAllNumbers();
-		session.setAttribute(Constants.SUM, sum);
-		return sum;
-    }
+			return sum;
+	}
 	
-	
-
+	public void clearCaches() {
+		cacheManager.getCache(Constants.CACHE_SUM).clear();
+		cacheManager.getCache(Constants.CACHE_ADDITION).clear();
+	}
 }
