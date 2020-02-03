@@ -1,7 +1,11 @@
 package com.example.addition.server.exception;
 
 public class AdditionException extends Exception {
+	
+	private static final long serialVersionUID = 2064043434555171094L;
+	
 	String message;
+	
     public String getMessage() {
         return message;
     }
