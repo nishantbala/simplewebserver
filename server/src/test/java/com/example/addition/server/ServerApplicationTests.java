@@ -38,4 +38,26 @@ class ServerApplicationTests {
         .andExpect(content().string("0"));
 	}
 	
+	@Test
+	public void testDecimalRequest() throws Exception {
+		MvcResult mvcResult = mockMvc.perform(post("/").content("3.2"))
+                .andExpect(request().asyncStarted())
+                .andDo(MockMvcResultHandlers.log())
+                .andReturn();
+		this.mockMvc.perform(asyncDispatch(mvcResult))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().string("Invalid input: 3.2"));
+	}
+	
+	@Test
+	public void testBigIntegerRequest() throws Exception {
+		MvcResult mvcResult = mockMvc.perform(post("/").content("10000000001"))
+                .andExpect(request().asyncStarted())
+                .andDo(MockMvcResultHandlers.log())
+                .andReturn();
+		this.mockMvc.perform(asyncDispatch(mvcResult))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().string("Max Value Exceeded"));
+	}
+	
 }
