@@ -30,6 +30,7 @@ public class AdditionServiceImpl implements AdditionService {
 
 		boolean isEndOfRequest = isEndOfRequest(payloadRequest);
 		if(isEndOfRequest) {
+			additionDao.clearSumCache(sessionId);
 			List<AdditionEntity> listOfEntities = additionDao.findAllEntities(sessionId);
 			BigInteger sum = additionDao.getSumFromCache(sessionId);
 			additionDao.saveReadytoRespond(sessionId);
@@ -74,7 +75,7 @@ public class AdditionServiceImpl implements AdditionService {
 		AdditionEntity entity = new AdditionEntity();
 		entity.setNumber(new BigInteger(payloadRequest));
 		entity.setSessionId(sessionId);
-		additionDao.clearCaches();
+		additionDao.clearCache(sessionId);
 		return entity;
 	}
 	

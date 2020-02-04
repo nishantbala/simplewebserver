@@ -76,8 +76,16 @@ public class AdditionDao {
 			return sum;
 	}
 	
-	public void clearCaches() {
-		cacheManager.getCache(Constants.CACHE_SUM).clear();
-		cacheManager.getCache(Constants.CACHE_ADDITION).clear();
+	public void clearCache(String sessionId) {
+		clearAdditionCache(sessionId);
+		clearSumCache(sessionId);
+	}
+	
+	public void clearAdditionCache(String sessionId) {
+		cacheManager.getCache(Constants.CACHE_ADDITION).evict(sessionId);
+	}
+	
+	public void clearSumCache(String sessionId) {
+		cacheManager.getCache(Constants.CACHE_SUM).evict(sessionId);
 	}
 }
