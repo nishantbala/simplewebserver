@@ -57,7 +57,8 @@ Provide tests as well
 		a. goto \server\testscripts\tomcat folder, 
 		b. execute sh testdata-tomcat.sh in a terminal
 		c. execute sh end-tomcat.sh in another terminal
-	4. These commands work only in Linux/Unix environments, you can still download and install GIT Bash to execute the test scripts
+	4. These commands work only in Linux/Unix environments
+	5. In order to execute this in windows, download and install GIT Bash to execute the test scripts.
 
 ## Tech Stack
 
