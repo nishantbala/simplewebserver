@@ -59,6 +59,8 @@ Provide tests as well
 		c. execute sh end-tomcat.sh in another terminal
 	4. These commands work only in Linux/Unix environments
 	5. In order to execute this in windows, download and install GIT Bash to execute the test scripts.
+	6. Alternatively, we can test using REST clients such as postman. 
+	7. Please note that browser based REST client do not allow more than 6 requests to the same host.
 
 ## Tech Stack
 
