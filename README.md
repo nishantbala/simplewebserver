@@ -16,6 +16,9 @@ giving out response on next end).
 Provide the application to us as source with build and deploy instructions (preferably it should build into a war file that can be run with jetty or
 tomcat).
 Provide tests as well
+
+## Prerequisite 
+	1. JAVA_HOME should be defined as a path under Environments. This should be pointed to JDK installation folder.
 	
 ## How to Build?
 
@@ -64,6 +67,7 @@ Provide tests as well
 
 ## Tech Stack
 
+- Java
 - Spring Boot
 - H2 Database
 - Tomcat
