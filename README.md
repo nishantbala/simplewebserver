@@ -45,6 +45,19 @@ Provide tests as well
 		a. catalina.bat run (on Windows)
 		b. catalina.sh run (on Unix-based systems)
 	5. Server will start working on http://localhost:%PORT%/server-1.0/
+	
+## How to test?
+
+	1. Test scripts are available \server\testscripts\standalone & \server\testscripts\tomcat folders
+	2. To test in an embedded tomcat server,
+		a. goto \server\testscripts\standalone folder, 
+		b. execute sh testdata.sh in a terminal
+		c. execute sh end.sh in another terminal
+	3.To test in a tomcat server,
+		a. goto \server\testscripts\tomcat folder, 
+		b. execute sh testdata-tomcat.sh in a terminal
+		c. execute sh end-tomcat.sh in another terminal
+	4. These commands work only in Linux/Unix environments, you can still download and install GIT Bash to execute the test scripts
 
 ## Tech Stack
 
