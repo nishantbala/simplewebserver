@@ -34,11 +34,11 @@ public class AdditionRepositoryTest {
 		    this.additionEntity.setSessionId("somesessionid");
 		}
 		  
-		  @Test
-		  public void testSaveSuccess() throws Exception {
+	  @Test
+	  public void testSaveSuccess() throws Exception {
 			additionRepository.save(this.additionEntity);
 		    Optional<AdditionEntity> entity = additionRepository.findById(this.additionEntity.getId());
 		    assertThat(entity.get().equals(this.additionEntity));
-		  }
+	  }
 		  
 }
