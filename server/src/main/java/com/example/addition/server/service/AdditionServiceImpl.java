@@ -24,7 +24,7 @@ public class AdditionServiceImpl implements AdditionService {
     private AdditionDao additionDao;
 	
 	@Override
-	public BigInteger processRequest(String payloadRequest, HttpServletRequest request) throws NumberFormatException, InterruptedException, AdditionException {
+	public BigInteger processRequest(String payloadRequest, HttpServletRequest request) throws InterruptedException, AdditionException {
 		String sessionId = generateSessionId(request);
 		validateRequest(payloadRequest,sessionId);
 
@@ -39,11 +39,10 @@ public class AdditionServiceImpl implements AdditionService {
 		} else {
 			AdditionEntity entity = createObject(payloadRequest, sessionId);
 			additionDao.saveEntity(entity);
-			while(!additionDao.canRespond(entity.getId(),sessionId)){
+			while(!additionDao.canRespond(sessionId)){
 				TimeUnit.SECONDS.sleep(1);
 			 }
-			 BigInteger updatedSum = additionDao.getSumFromCache(sessionId);
-			 return updatedSum;
+			 return additionDao.getSumFromCache(sessionId);
 		} 
 	}
 	
@@ -65,13 +64,13 @@ public class AdditionServiceImpl implements AdditionService {
 	public void checkCurrentSum(String payloadRequest, String sessionId) throws AdditionException {
 		BigInteger currentSum = additionDao.getSum(sessionId);
 		BigInteger currentValue = currentSum.add(new BigInteger(payloadRequest));
-		if(currentValue.compareTo(Constants.MAX_VALUE) > 0) {
+		if(currentValue.compareTo(new BigInteger(Constants.MAX_VALUE)) > 0) {
 			throw new AdditionException(Constants.ERROR_MSG_MAX_VALUE_EXCEEDED);
 		}
 		
 	}
 	
-	public AdditionEntity createObject(String payloadRequest, String sessionId) throws AdditionException {
+	public AdditionEntity createObject(String payloadRequest, String sessionId) {
 		AdditionEntity entity = new AdditionEntity();
 		entity.setNumber(new BigInteger(payloadRequest));
 		entity.setSessionId(sessionId);
@@ -79,7 +78,7 @@ public class AdditionServiceImpl implements AdditionService {
 		return entity;
 	}
 	
-	public String generateSessionId(HttpServletRequest request) throws AdditionException{
+	public String generateSessionId(HttpServletRequest request) throws AdditionException {
 		String ipAddress = request.getRemoteAddr();
 		String sessionId = null;
 		try {

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.example.addition.server.common.Constants;
 import com.example.addition.server.entity.AdditionEntity;
-import com.example.addition.server.exception.AdditionException;
 import com.example.addition.server.repository.AdditionRepository;
 
 @Component
@@ -23,21 +22,21 @@ public class AdditionDao {
 	@Autowired
     private AdditionRepository additionRepository;
 	
-	public void saveEntity(AdditionEntity entity) throws AdditionException {
+	public void saveEntity(AdditionEntity entity){
 		additionRepository.save(entity);
     }
-	public void saveReadytoRespond(String sessionId) throws AdditionException {
+	public void saveReadytoRespond(String sessionId) {
 		cacheManager.getCache(Constants.CACHE_ADDITION).put(sessionId, true);
     }	
-	public List<AdditionEntity> findAllEntities(String sessionId) throws AdditionException {
+	public List<AdditionEntity> findAllEntities(String sessionId){
 		return additionRepository.findBySessionId(sessionId);
     }
 	
-	public void deleteAllEntities(List<AdditionEntity> entities) throws AdditionException {
+	public void deleteAllEntities(List<AdditionEntity> entities) {
 		additionRepository.deleteInBatch(entities);
     }
 	
-	public boolean canRespond(long entityID, String sessionID) {
+	public boolean canRespond(String sessionID) {
 		boolean canRespondValue = false;
 		
 		//First get cached item
@@ -52,9 +51,9 @@ public class AdditionDao {
 		return canRespondValue;
 	}
 	
-	public BigInteger getSumFromCache(String sessionId) throws AdditionException {
+	public BigInteger getSumFromCache(String sessionId) {
 		ValueWrapper cachedItem = cacheManager.getCache(Constants.CACHE_SUM).get(sessionId);
-		BigInteger sum = BigInteger.ZERO;
+		BigInteger sum;
 		if(cachedItem == null) {
 			sum = getSum(sessionId);
 			cacheManager.getCache(Constants.CACHE_SUM).put(sessionId, sum);
@@ -65,7 +64,7 @@ public class AdditionDao {
 		}	
     }
 	
-	public BigInteger getSum(String sessionId) throws AdditionException{
+	public BigInteger getSum(String sessionId){
 		BigInteger sum = BigInteger.ZERO;
 		List<AdditionEntity> listOfEntities = findAllEntities(sessionId);
 		Iterator<AdditionEntity> iterator = listOfEntities.iterator();

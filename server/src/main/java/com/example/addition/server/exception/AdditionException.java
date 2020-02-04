@@ -4,14 +4,11 @@ public class AdditionException extends Exception {
 	
 	private static final long serialVersionUID = 2064043434555171094L;
 	
-	String message;
+	private final String message;
 	
+	@Override
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public AdditionException(String message) {

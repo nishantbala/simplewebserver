@@ -1,6 +1,5 @@
 package com.example.addition.server.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -15,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.Cache;
+import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
 
 import com.example.addition.server.common.Constants;
@@ -61,7 +60,7 @@ public class AdditionDaoTest {
 		  when(cacheManager.getCache(Constants.CACHE_ADDITION)).thenReturn(cache);
 		  when(cache.get(additionEntity.getSessionId())).thenReturn(value);
 		  when(value.get()).thenReturn((boolean) true);
-		  assertTrue(this.additionDao.canRespond(this.additionEntity.getId(), this.additionEntity.getSessionId()));
+		  assertTrue(this.additionDao.canRespond(this.additionEntity.getSessionId()));
 	  }
 	  
 	  @Test
@@ -87,7 +86,7 @@ public class AdditionDaoTest {
 	  
 	  @Test
 	  public void testGetSum() throws Exception{
-		  	assertThat(this.additionDao.getSum(this.additionEntity.getSessionId()));
+		  assertTrue(this.additionDao.getSum(this.additionEntity.getSessionId()) instanceof BigInteger);
       }
 	
 }
