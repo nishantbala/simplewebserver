@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Test task: Create a simple web server that can sum up numbers in a multithreaded environment.
+Create a simple web server that can sum up numbers in a multithreaded environment.
 
 ## Requirements
 Create a java http server application that accepts up to 20 simultaneous requests. 
