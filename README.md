@@ -39,6 +39,18 @@ Provide tests as well
 	3. If you are on a windows machine, double click run-windows.bat to start the application.
 	4. Server will start working on http://localhost:1337/
 
+## Prerequisite to deploy in tomcat server
+Replace the following xml element in %TOMCAT_PATH%/conf/server.xml 
+
+```xml
+<Connector executor="tomcatThreadPool"
+			   maxThreads="20"
+			   maxConnections="20"
+			   acceptCount="1"
+               port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+```	       
 ## How to deploy in tomcat server?
 
 	1. After building the application, goto /server/target
