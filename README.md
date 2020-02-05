@@ -17,7 +17,7 @@ Provide the application to us as source with build and deploy instructions (pref
 tomcat).
 Provide tests as well
 
-## Prerequisite 
+## Prerequisite to build
 	1. JAVA_HOME should be defined as a path under Environments. This should be pointed to JDK installation folder.
 	
 ## How to Build?
