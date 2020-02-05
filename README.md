@@ -42,6 +42,8 @@ Provide tests as well
 ## Prerequisite to deploy in tomcat server
 Replace the following xml element in %TOMCAT_PATH%/conf/server.xml 
 
+Also change the port number to set user defined one.
+
 ```xml
 <Connector executor="tomcatThreadPool"
 			   maxThreads="20"
